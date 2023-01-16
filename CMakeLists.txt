@@ -10,7 +10,9 @@ add_executable(${PROJECT_NAME} main.c)
 
 # You should usually split this into folders, but this is a simple example
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+enable_testing()
 add_subdirectory(src)
+add_subdirectory(test)
 target_link_libraries(${PROJECT_NAME} PUBLIC Matrix)
 
 # Adding something we can run - Output name matches target name
