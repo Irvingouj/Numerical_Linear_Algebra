@@ -2,5 +2,9 @@
     "C_Cpp.errorSquiggles": "disabled",
     "workbench.colorCustomizations": {
         "editorLineNumber.foreground": "#ffff",
+    },
+    "files.associations": {
+        "matrix.h": "c",
+        "matrix_test.h": "c"
     }
 }
