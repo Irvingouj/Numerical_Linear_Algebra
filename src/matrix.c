@@ -34,11 +34,7 @@ void print(struct Matrix *self){
 void Matrix_init(struct Matrix *self, size_t row_size, size_t col_size){
     self->row_size = row_size;
     self->col_size = col_size;
-    self->vals = malloc(row_size*col_size*sizeof(double));
-    //set all value to zero
-    for(size_t i = 0; i < row_size*col_size; i++)
-        self->vals[i] = 0.0;
-        
+    self->vals = calloc(row_size*col_size,sizeof(double));
     self->vtable = (Matrix_VTable*)malloc(sizeof(Matrix_VTable));
     self->vtable->get_value = &get_value;
     self->vtable->vector_multiply = &vector_multiply;

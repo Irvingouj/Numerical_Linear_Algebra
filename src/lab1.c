@@ -1,17 +1,18 @@
 #include "matrix.h"
 #include <stdlib.h>
+#include <math.h>
+#include "vector.h"
+#include <string.h>
 
 // generate randowm double
 double get_random_double()
 {
     return (double)rand() / (double)RAND_MAX;
 }
-
 double get_random_double_range(double min, double max)
 {
     return min + (max - min) * get_random_double();
 }
-
 Matrix *MatSym(size_t n)
 {
     Matrix *res = New_Matrix(n, n);
@@ -72,13 +73,14 @@ Matrix *MatRegU(size_t n)
 
     return res;
 };
-Matrix *MatRand(size_t n, size_t m, double p) { 
+Matrix *MatRand(size_t n, size_t m, double p)
+{
     Matrix *res = New_Matrix(n, m);
     for (size_t i = 0; i < n; i++)
     {
         for (size_t j = 0; j < m; j++)
         {
-            double val = get_random_double_range(p,-p);
+            double val = get_random_double_range(p, -p);
             res->vtable->set_value(res, i, j, val);
         }
     }
@@ -87,7 +89,8 @@ Matrix *MatRand(size_t n, size_t m, double p) {
 };
 
 // problem 2
-Matrix *ProductMatrix(Matrix *B, Matrix *c) {
+Matrix *ProductMatrix(Matrix *B, Matrix *c)
+{
     // check if B and c are compatible
     if (B->col_size != c->row_size)
     {
@@ -111,7 +114,8 @@ Matrix *ProductMatrix(Matrix *B, Matrix *c) {
     return res;
 };
 
-double Trans(Matrix *A) {
+double Trans(Matrix *A)
+{
     double res = 0;
     // sum up diagonal
     for (size_t i = 0; i < A->row_size; i++)
@@ -122,27 +126,50 @@ double Trans(Matrix *A) {
     return res;
 }
 
-Matrix *GramSchmidt(Matrix *A) { 
+Matrix *GramSchmidt(Matrix *A)
+{
     // check if A is square
     if (A->row_size != A->col_size)
     {
         return NULL;
     }
 
+    // set ups
     Matrix *res = New_Matrix(A->row_size, A->col_size);
+    double **Vs = matrix_to_col(A);
+    double **Us = init_2d_array(A->row_size, A->col_size);
+
+    // gram schmidt
+    vector_copy(Vs[0], A->col_size, Us[0]);
+    for (int k = 1; k < A->row_size; k++)
+    {
+        double *proj = (double *)calloc(sizeof(double), A->col_size);
+        double *temp = (double *)calloc(sizeof(double), A->col_size);
+        for (int j = 0; j < k; j++)
+        {
+            projection(Us[j], Vs[k], A->col_size, temp);
+            vector_add(proj, temp, A->col_size, proj);
+        }
+        vector_subtract(Vs[k], proj, A->col_size, Us[k]);
+
+        free(temp);
+        free(proj);
+    }
+
+    // build res from normalized Us
     for (size_t i = 0; i < A->row_size; i++)
     {
+        vector_normalize(Us[i], A->col_size);
         for (size_t j = 0; j < A->col_size; j++)
         {
-            double val = A->vtable->get_value(A, i, j);
-            for (size_t k = 0; k < i; k++)
-            {
-                double val2 = res->vtable->get_value(res, k, j);
-                val -= val2 * res->vtable->get_value(res, k, i);
-            }
-            res->vtable->set_value(res, i, j, val);
+            res->vtable->set_value(res, i, j, Us[i][j]);
         }
     }
 
+    // free
+    free_double_pointer(Vs, A->row_size);
+    free_double_pointer(Us, A->row_size);
+
+    // remember to free
     return res;
 };
