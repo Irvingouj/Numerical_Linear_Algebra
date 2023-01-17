@@ -65,6 +65,7 @@ void Matrix_init(struct Matrix *self, size_t row_size, size_t col_size){
     self->vtable->vector_multiply = &vector_multiply;
     self->vtable->set_value = &set_value;
     self->vtable->print = &print;
+    self->vtable->matrix_multiply = &matrix_multiply;
 }
 
 Matrix* New_Matrix(size_t row_size,size_t col_size){

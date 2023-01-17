@@ -11,6 +11,7 @@ typedef struct Matrix_VTable
     void (*vector_multiply)(Matrix *self, double *vector, double *res);
     void (*set_value)(Matrix *self, size_t row, size_t col, double val);
     void (*print)(Matrix *self);
+    void (*matrix_multiply)(Matrix *self, Matrix *other, Matrix *res);
 } Matrix_VTable;
 
 typedef struct Matrix
