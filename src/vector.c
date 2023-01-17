@@ -47,10 +47,10 @@ double vector_norm(double *a, size_t n)
 }
 
 double** matrix_to_col(Matrix* A){
-    double** res = init_2d_array(A->col_size, A->row_size);
+    double** res = init_2d_array(A->num_of_rows, A->num_of_columns);
     // for each column in A
-    for(size_t i = 0; i< A->row_size; i++){
-        for (size_t j = 0; j < A->col_size; j++)
+    for(size_t i = 0; i< A->num_of_columns; i++){
+        for (size_t j = 0; j < A->num_of_rows; j++)
         {
             res[i][j] = A->vtable->get_value(A, j, i);
         }

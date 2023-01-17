@@ -12,13 +12,15 @@ typedef struct Matrix_VTable
     void (*set_value)(Matrix *self, size_t row, size_t col, double val);
     void (*print)(Matrix *self);
     void (*matrix_multiply)(Matrix *self, Matrix *other, Matrix *res);
+    void (*get_row)(Matrix *self, size_t row, double *res);
+    void (*get_col)(Matrix *self, size_t col, double *res);
 } Matrix_VTable;
 
 typedef struct Matrix
 {
-    size_t row_size;
-    size_t col_size;
-    double *vals;
+    size_t num_of_columns;
+    size_t num_of_rows;
+    double **vals;
     Matrix_VTable *vtable;
 } Matrix;
 
@@ -30,7 +32,7 @@ int create_matrix_csr(
     );
 
 extern void Matrix_init(struct Matrix *self, size_t row_size, size_t col_size);
-extern Matrix* New_Matrix(size_t row_size,size_t col_size);
+extern Matrix* New_Matrix_row_col(size_t row_size,size_t col_size);
 extern void Matrix_destroy(struct Matrix *self);
 
 #endif

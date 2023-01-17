@@ -15,7 +15,7 @@ double get_random_double_range(double min, double max)
 }
 Matrix *MatSym(size_t n)
 {
-    Matrix *res = New_Matrix(n, n);
+    Matrix *res = New_Matrix_row_col(n, n);
     // generate random symatric matrix
     for (size_t i = 0; i < n; i++)
     {
@@ -30,7 +30,7 @@ Matrix *MatSym(size_t n)
 }
 Matrix *MatReg(size_t n)
 {
-    Matrix *res = New_Matrix(n, n);
+    Matrix *res = New_Matrix_row_col(n, n);
 
     // upper triangular matrix with diagonal non zero, hence must be invertible
     for (size_t i = 0; i < n; i++)
@@ -47,7 +47,7 @@ Matrix *MatReg(size_t n)
 Matrix *MatRegI(size_t n)
 {
     // real lower triangular invertible matrix, non zero diagonal, hence invertible
-    Matrix *res = New_Matrix(n, n);
+    Matrix *res = New_Matrix_row_col(n, n);
     for (size_t i = 0; i < n; i++)
     {
         for (size_t j = 0; j <= i; j++)
@@ -61,7 +61,7 @@ Matrix *MatRegI(size_t n)
 Matrix *MatRegU(size_t n)
 {
     // same as MatReg
-    Matrix *res = New_Matrix(n, n);
+    Matrix *res = New_Matrix_row_col(n, n);
     for (size_t i = 0; i < n; i++)
     {
         for (size_t j = i; j < n; j++)
@@ -73,12 +73,12 @@ Matrix *MatRegU(size_t n)
 
     return res;
 };
-Matrix *MatRand(size_t n, size_t m, double p)
+Matrix *MatRand(size_t num_of_row, size_t num_of_col, double p)
 {
-    Matrix *res = New_Matrix(n, m);
-    for (size_t i = 0; i < n; i++)
+    Matrix *res = New_Matrix_row_col(num_of_row, num_of_col);
+    for (size_t i = 0; i < res->num_of_rows; i++)
     {
-        for (size_t j = 0; j < m; j++)
+        for (size_t j = 0; j < res->num_of_columns; j++)
         {
             double val = get_random_double_range(p, -p);
             res->vtable->set_value(res, i, j, val);
@@ -89,36 +89,30 @@ Matrix *MatRand(size_t n, size_t m, double p)
 };
 
 // problem 2
-Matrix *ProductMatrix(Matrix *B, Matrix *c)
+Matrix *ProductMatrix(Matrix *left, Matrix *right)
 {
     // check if B and c are compatible
-    if (B->col_size != c->row_size)
+    if (left->num_of_columns != right->num_of_rows)
     {
+        printf("Incompatible matrix\n");
         return NULL;
     }
 
-    Matrix *res = New_Matrix(B->row_size, c->col_size);
-    for (size_t i = 0; i < B->row_size; i++)
-    {
-        for (size_t j = 0; j < c->col_size; j++)
-        {
-            double val = 0;
-            for (size_t k = 0; k < B->col_size; k++)
-            {
-                val += B->vtable->get_value(B, i, k) * c->vtable->get_value(c, k, j);
-            }
-            res->vtable->set_value(res, i, j, val);
-        }
-    }
-
+    Matrix *res = New_Matrix_row_col(left->num_of_rows, right->num_of_columns);
+    left->vtable->matrix_multiply(left, right, res);
     return res;
-};
+}
 
 double Trans(Matrix *A)
 {
+    // check if it is square
+    if (A->num_of_columns != A->num_of_rows)
+    {
+        return 0;
+    }
     double res = 0;
     // sum up diagonal
-    for (size_t i = 0; i < A->row_size; i++)
+    for (size_t i = 0; i < A->num_of_columns; i++)
     {
         res += A->vtable->get_value(A, i, i);
     }
@@ -129,46 +123,47 @@ double Trans(Matrix *A)
 Matrix *GramSchmidt(Matrix *A)
 {
     // check if A is square
-    if (A->row_size != A->col_size)
+    if (A->num_of_columns != A->num_of_rows)
     {
         return NULL;
     }
+    const size_t vec_n = A->num_of_rows;
 
     // set ups
-    Matrix *res = New_Matrix(A->row_size, A->col_size);
+    Matrix *res = New_Matrix_row_col(A->num_of_rows, A->num_of_columns);
     double **Vs = matrix_to_col(A);
-    double **Us = init_2d_array(A->row_size, A->col_size);
+    double **Us = init_2d_array(vec_n, A->num_of_columns);
 
     // gram schmidt
-    vector_copy(Vs[0], A->col_size, Us[0]);
-    for (int k = 1; k < A->row_size; k++)
+    vector_copy(Vs[0], vec_n, Us[0]);
+    for (int k = 1; k < A->num_of_columns; k++)
     {
-        double *proj = (double *)calloc(sizeof(double), A->col_size);
-        double *temp = (double *)calloc(sizeof(double), A->col_size);
+        double *proj = (double *)calloc(sizeof(double), vec_n);
+        double *temp = (double *)calloc(sizeof(double), vec_n);
         for (int j = 0; j < k; j++)
         {
-            projection(Us[j], Vs[k], A->col_size, temp);
-            vector_add(proj, temp, A->col_size, proj);
+            projection(Us[j], Vs[k], vec_n, temp);
+            vector_add(proj, temp, vec_n, proj);
         }
-        vector_subtract(Vs[k], proj, A->col_size, Us[k]);
+        vector_subtract(Vs[k], proj, vec_n, Us[k]);
 
         free(temp);
         free(proj);
     }
 
     // build res from normalized Us
-    for (size_t i = 0; i < A->row_size; i++)
+    for (size_t i = 0; i < A->num_of_columns; i++)
     {
-        vector_normalize(Us[i], A->col_size);
-        for (size_t j = 0; j < A->col_size; j++)
+        vector_normalize(Us[i], vec_n);
+        for (size_t j = 0; j < vec_n; j++)
         {
             res->vtable->set_value(res, i, j, Us[i][j]);
         }
     }
 
     // free
-    free_double_pointer(Vs, A->row_size);
-    free_double_pointer(Us, A->row_size);
+    free_double_pointer(Vs, A->num_of_columns);
+    free_double_pointer(Us, A->num_of_columns);
 
     // remember to free
     return res;
