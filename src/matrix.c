@@ -13,6 +13,31 @@ void set_value(Matrix *self, size_t row, size_t col, double val){
 void vector_multiply(Matrix *self, double *vector, double *res){
 
 }
+// col_size is the number of rows and row_size is the number of columns
+void matrix_multiply(Matrix *self, Matrix *other, Matrix *res){
+    //check if other and self are compatible
+    if (self->row_size != other->cow_size){
+        return;
+    }
+    //check if res is the right size
+    if (res->row_size != self->row_size || res->col_size != other->col_size){
+        return;
+    }
+
+    for (size_t i = 0; i < self->row_size; i++)
+    {
+        for (size_t j = 0; j < other->col_size; j++)
+        {
+            double val = 0;
+            for (size_t k = 0; k < self->col_size; k++)
+            {
+                val += self->vtable->get_value(self, i, k) * other->vtable->get_value(other, k, j);
+            }
+            res->vtable->set_value(res, i, j, val);
+        }
+    }
+}
+
 void Matrix_destroy(Matrix *self){
     free(self->vals);
     free(self->vtable);

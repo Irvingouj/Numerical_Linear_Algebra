@@ -3,13 +3,6 @@
 
 #include <stdio.h>
 
-typedef enum RANDOM_MODE
-{
-    A,
-    B,
-    C,
-    D
-} RANDOM_MODE;
 typedef struct Matrix Matrix;
 
 typedef struct Matrix_VTable
