@@ -16,7 +16,7 @@ void vector_multiply(Matrix *self, double *vector, double *res){
 // col_size is the number of rows and row_size is the number of columns
 void matrix_multiply(Matrix *self, Matrix *other, Matrix *res){
     //check if other and self are compatible
-    if (self->row_size != other->cow_size){
+    if (self->row_size != other->col_size){
         return;
     }
     //check if res is the right size
