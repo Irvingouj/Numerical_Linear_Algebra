@@ -93,6 +93,76 @@ void Matrix_init(struct Matrix *self, size_t num_of_rows, size_t num_of_columns)
     self->vtable->get_col = &get_col;
 }
 
+void Matrix_multiply_left_transpose(Matrix* left, Matrix* right, Matrix *res){
+    if(left->num_of_rows != right->num_of_rows){
+        printf("Matrix dimensions do not match\n");
+        abort();
+        return;
+    }
+    if(res->num_of_rows != left->num_of_columns || res->num_of_columns != right->num_of_columns){
+        printf("Result matrix dimensions do not match\n");
+        abort();
+        return;
+    }
+
+    double* left_row = malloc(sizeof(double) * left->num_of_rows);
+    double* right_col = malloc(sizeof(double) * right->num_of_rows);
+    for(size_t i =0; i< res->num_of_rows; ++i){
+        for(size_t j = 0; j < res->num_of_columns; ++j){
+            double sum = 0;
+            left->vtable->get_col(left, i, left_row);
+            right->vtable->get_col(right, j, right_col);
+            sum = vector_dot_product(left_row, right_col, left->num_of_rows);
+            res->vtable->set_value(res, i, j, sum);
+        }
+    }
+
+    free(left_row);
+    free(right_col);
+}
+
+void Matrix_multiply_right_transpose(Matrix* left, Matrix* right, Matrix *res){
+    if(left->num_of_columns != right->num_of_columns){
+        printf("Matrix dimensions do not match\n");
+        return;
+    }
+    if(res->num_of_rows != left->num_of_rows || res->num_of_columns != right->num_of_rows){
+        printf("Result matrix dimensions do not match\n");
+        return;
+    }
+
+    double* left_row = malloc(sizeof(double) * left->num_of_columns);
+    double* right_col = malloc(sizeof(double) * right->num_of_columns);
+    for(size_t i =0; i< res->num_of_rows; ++i){
+        for(size_t j = 0; j < res->num_of_columns; ++j){
+            double sum = 0;
+            left->vtable->get_row(left, i, left_row);
+            right->vtable->get_row(right, j, right_col);
+            sum = vector_dot_product(left_row, right_col, left->num_of_columns);
+            res->vtable->set_value(res, i, j, sum);
+        }
+    }
+
+    free(left_row);
+    free(right_col);
+}
+
+void Matrix_multiply(Matrix* left,Matrix *right,Matrix *res){
+    matrix_multiply(left, right, res);
+}
+
+Matrix* New_Matrix_from_array(double** array, size_t num_of_rows, size_t num_of_columns){
+    Matrix* res = New_Matrix_row_col(num_of_rows, num_of_columns);
+    for (size_t i = 0; i < num_of_rows; i++)
+    {
+        for (size_t j = 0; j < num_of_columns; j++)
+        {
+            res->vtable->set_value(res, i, j, array[i][j]);
+        }
+    }
+    return res;
+}
+
 Matrix* New_Matrix_row_col(size_t num_of_rows,size_t num_of_columns){
     Matrix* res = (Matrix*)malloc(sizeof(Matrix));
     Matrix_init(res, num_of_rows, num_of_columns);

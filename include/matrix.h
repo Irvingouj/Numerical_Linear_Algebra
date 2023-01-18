@@ -34,5 +34,9 @@ int create_matrix_csr(
 extern void Matrix_init(struct Matrix *self, size_t row_size, size_t col_size);
 extern Matrix* New_Matrix_row_col(size_t row_size,size_t col_size);
 extern void Matrix_destroy(struct Matrix *self);
+extern void Matrix_multiply(Matrix *self, Matrix *other, Matrix *res);
+extern void Matrix_multiply_left_transpose(Matrix *left, Matrix *right, Matrix *res);
+extern void Matrix_multiply_right_transpose(Matrix *left, Matrix *right, Matrix *res);
+extern Matrix* New_Matrix_from_array(double **vals, size_t row_size, size_t col_size);
 
 #endif

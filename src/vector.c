@@ -83,7 +83,6 @@ double* New_Vector(size_t n){
 void projection(double *u,double *v, size_t n, double *res){
 
     double proj_coeff = vector_dot_product(u, v, n) / vector_dot_product(u, u, n);
-    printf("proj_coeff: %f \n", proj_coeff);
     vector_scalar_multiply(u, proj_coeff, n, res);
 }
 

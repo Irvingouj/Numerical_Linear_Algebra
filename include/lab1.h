@@ -13,5 +13,6 @@ extern Matrix* ProductMatrix(Matrix* B,Matrix* c);
 extern double Trans(Matrix* A);
 
 extern Matrix* GramSchmidt(Matrix* A);
+extern void Problem_3();
 
 #endif /* F7DED081_6C7A_4C4E_BC45_79E42C8E1623 */

@@ -1,3 +1,9 @@
+#ifdef DEBUG
+#define DEBUG_PRINT(fmt, args...)    fprintf(stderr, fmt, ## args)
+#else
+#define DEBUG_PRINT(fmt, args...)    /* Don't do anything in release builds */
+#endif
+
 #include <stdio.h>
 #include "include/lab1.h"
 #include "include/matrix.h"
@@ -7,11 +13,14 @@ void vector_test();
 void gram_schmidt_test();
 void matrix_test();
 void matrix_multiply_test();
+void gram_schmidt_test2();
 
 int main(int argc, char const *argv[])
 {
-    matrix_test();
+    // matrix_test();
     // gram_schmidt_test();
+    // gram_schmidt_test2();
+    Problem_3();
 
     return 0;
 }
@@ -40,6 +49,25 @@ void gram_schmidt_test(){
     printf("\n====================\n");
     orthorgonal->vtable->print(orthorgonal);
     printf("\n");
+}
+
+void gram_schmidt_test2(){
+    double val[2][2] = {{1, 2}, {3, 4}};
+    Matrix *A = New_Matrix_row_col(2, 2);
+    for (size_t i = 0; i < A->num_of_rows; i++)
+    {
+        for (size_t j = 0; j < A->num_of_columns; j++)
+        {
+            A->vtable->set_value(A, i, j, val[i][j]);
+        }
+    }
+
+    printf("A:\n");
+    A->vtable->print(A);
+
+    Matrix* U = GramSchmidt(A);
+    printf("U:\n");
+    U->vtable->print(U);
 }
 
 void matrix_test() {

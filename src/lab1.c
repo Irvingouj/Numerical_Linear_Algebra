@@ -99,7 +99,7 @@ Matrix *ProductMatrix(Matrix *left, Matrix *right)
     }
 
     Matrix *res = New_Matrix_row_col(left->num_of_rows, right->num_of_columns);
-    left->vtable->matrix_multiply(left, right, res);
+    Matrix_multiply(left, right, res);
     return res;
 }
 
@@ -122,11 +122,6 @@ double Trans(Matrix *A)
 
 Matrix *GramSchmidt(Matrix *A)
 {
-    // check if A is square
-    if (A->num_of_columns != A->num_of_rows)
-    {
-        return NULL;
-    }
     const size_t vec_n = A->num_of_rows;
 
     // set ups
@@ -152,10 +147,10 @@ Matrix *GramSchmidt(Matrix *A)
     }
 
     // build res from normalized Us
-    for (size_t i = 0; i < A->num_of_columns; i++)
+    for (size_t i = 0; i < res->num_of_rows; i++)
     {
         vector_normalize(Us[i], vec_n);
-        for (size_t j = 0; j < vec_n; j++)
+        for (size_t j = 0; j < res->num_of_columns; j++)
         {
             res->vtable->set_value(res, i, j, Us[i][j]);
         }
@@ -168,3 +163,46 @@ Matrix *GramSchmidt(Matrix *A)
     // remember to free
     return res;
 };
+
+void Problem_3(){
+    double val[2][2] = {{1, 2}, {3, 4}};
+    
+    Matrix *A = New_Matrix_row_col(2, 2);
+    for (size_t i = 0; i < A->num_of_rows; i++)
+    {
+        for (size_t j = 0; j < A->num_of_columns; j++)
+        {
+            A->vtable->set_value(A, i, j, val[i][j]);
+        }
+    }
+
+    printf("A:\n");
+    A->vtable->print(A);
+
+    Matrix* U = GramSchmidt(A);
+    printf("U:\n");
+    U->vtable->print(U);
+
+    Matrix* UU_t = New_Matrix_row_col(U->num_of_rows, U->num_of_rows);
+    Matrix_multiply_right_transpose(U, U,UU_t);
+    printf("U multiply by U Trasnpose:\n");
+    UU_t->vtable->print(UU_t);
+
+    Matrix* U_tU = New_Matrix_row_col(U->num_of_columns, U->num_of_columns);
+    Matrix_multiply_left_transpose(U, U, U_tU);
+    printf("U Trasnpose multiply by U:\n");
+    U_tU->vtable->print(U_tU);
+
+    Matrix* U_tA = New_Matrix_row_col(U->num_of_columns, A->num_of_columns);
+    Matrix_multiply_left_transpose(U, A, U_tA);
+    printf("U Trasnpose multiply by A:\n");
+    U_tA->vtable->print(U_tA);
+
+
+    //destroy all matrix
+    Matrix_destroy(A);
+    Matrix_destroy(U);
+    Matrix_destroy(UU_t);
+    Matrix_destroy(U_tU);
+    Matrix_destroy(U_tA);
+}
