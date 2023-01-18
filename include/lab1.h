@@ -12,6 +12,8 @@ extern Matrix* MatRand(size_t n,size_t m,double p);
 extern Matrix* ProductMatrix(Matrix* B,Matrix* c);
 extern double Trans(Matrix* A);
 
+extern void Problem_1();
+extern void Problem_2();
 extern Matrix* GramSchmidt(Matrix* A);
 extern void Problem_3();
 extern void Problem_3_3By3();
