@@ -1,8 +1,4 @@
-#ifdef DEBUG
-#define DEBUG_PRINT(fmt, args...)    fprintf(stderr, fmt, ## args)
-#else
-#define DEBUG_PRINT(fmt, args...)    /* Don't do anything in release builds */
-#endif
+
 
 #include <stdio.h>
 #include "include/lab1.h"
@@ -18,9 +14,10 @@ void gram_schmidt_test2();
 int main(int argc, char const *argv[])
 {
     // matrix_test();
-    // gram_schmidt_test();
+    gram_schmidt_test();
     // gram_schmidt_test2();
-    Problem_3();
+    // Problem_3();
+    // Problem_3_3By3();
 
     return 0;
 }
@@ -29,9 +26,9 @@ void gram_schmidt_test(){
     printf("\n Problem 3 GramSchmidt\n");
     Matrix *m7 = New_Matrix_row_col(3, 3);
     double arr[3][3] = {
-        {1, 1, 0},
-        {0, 2, 2},
-        {0, 0, 2}
+        {2, 1, 0},
+        {0, 1, 1},
+        {3,2,-1}
     };
 
     for (size_t i = 0; i < 3; i++)
