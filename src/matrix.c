@@ -67,6 +67,13 @@ void Matrix_init(struct Matrix *self, size_t row_size, size_t col_size){
     self->vtable->print = &print;
 }
 
+void Matrix_multiply_left_transpos(Matrix *left,Matrix *right, Matrix *res){
+}
+
+void Matrix_multiply_right_transpos(Matrix *left,Matrix *right, Matrix *res){
+
+}
+
 Matrix* New_Matrix(size_t row_size,size_t col_size){
     Matrix* res = (Matrix*)malloc(sizeof(Matrix));
     Matrix_init(res, row_size, col_size);
