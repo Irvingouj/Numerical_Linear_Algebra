@@ -6,18 +6,19 @@
 void vector_test();
 void gram_schmidt_test();
 void matrix_test();
+void matrix_multiply_test();
 
 int main(int argc, char const *argv[])
 {
     matrix_test();
-    gram_schmidt_test();
+    // gram_schmidt_test();
 
     return 0;
 }
 
 void gram_schmidt_test(){
     printf("\n Problem 3 GramSchmidt\n");
-    Matrix *m7 = New_Matrix(3, 3);
+    Matrix *m7 = New_Matrix_row_col(3, 3);
     double arr[3][3] = {
         {1, 1, 0},
         {0, 2, 2},
@@ -44,7 +45,7 @@ void gram_schmidt_test(){
 void matrix_test() {
     printf("Matrix Get Test \n");
 
-    Matrix *m = New_Matrix(5, 5);
+    Matrix *m = New_Matrix_row_col(5, 5);
     int counter = 0;
     for (size_t i = 0; i < 5; i++)
     {
@@ -83,7 +84,7 @@ void matrix_test() {
 
 
     printf("\nProblem 2 ProductMatrix\n");
-    Matrix *b = New_Matrix(3, 3);
+    Matrix *b = New_Matrix_row_col(3, 3);
     // init b to identity matrix
     for (size_t i = 0; i < 3; i++)
     {
@@ -175,4 +176,43 @@ void vector_test(){
     print_vector(v3, 3,"v3");
 
 
+}
+
+void matrix_multiply_test(){
+    printf("\nProblem 2 ProductMatrix\n");
+    Matrix *b = New_Matrix_row_col(3, 3);
+    // init b to identity matrix
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 3; j++)
+        {
+            if (i == j)
+            {
+                b->vtable->set_value(b, i, j, 2);
+            }
+        }
+    }
+
+    Matrix *c = New_Matrix_row_col(3, 4);
+    double values[3][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12}};
+    for (size_t i = 0; i < 3; i++)
+    {
+        for (size_t j = 0; j < 4; j++)
+        {
+            c->vtable->set_value(c, i, j, values[i][j]);
+        }
+    }
+    // print a b and c with print function
+    printf("\n a \n");
+    Matrix *a = New_Matrix_row_col(3, 4);
+    b->vtable->matrix_multiply(b, c, a);
+    a->vtable->print(a);
+    printf("\n b \n");
+    b->vtable->print(b);
+    printf("\n c \n");
+    c->vtable->print(c);
+
+    Matrix_destroy(a);
+    Matrix_destroy(b);
+    Matrix_destroy(c);
 }
