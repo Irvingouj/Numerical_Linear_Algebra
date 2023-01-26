@@ -295,7 +295,6 @@ void Problem_3(){
 }
 
 void Problem_3_3By3(){
-    printf(\n"Problem 3 test ================\n");
     // do problem 3 again with 3 by 3 matrix
     double val[3][3] = {{2, 1, 0},
                         {0, 1, 1},
