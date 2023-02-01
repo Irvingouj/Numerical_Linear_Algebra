@@ -91,6 +91,13 @@ void vector_normalize(double *u, size_t n){
     vector_scalar_multiply(u, 1/norm, n, u);
 }
 
+double* get_normalized_vector(double *u, size_t n){
+    double* res = New_Vector(n);
+    vector_copy(u, n, res);
+    vector_normalize(res, n);
+    return res;
+}
+
 void print_vector(double* v, size_t n,char* name){
     printf("Vector %s: [",name);
     for (size_t i = 0; i < n; i++)

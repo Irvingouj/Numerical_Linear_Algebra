@@ -3,6 +3,7 @@
 #include "matrix.h"
 #include "vector.h"
 #include <stdbool.h>
+#include "lab1.h"
 
 double get_value(Matrix *self, size_t row, size_t col){
     return self->vals[row][col];
@@ -193,7 +194,6 @@ bool can_multiply(Matrix *self, Matrix *other){
 bool can_solve(Matrix *self, size_t b_size){
     return self->num_of_rows == b_size;
 }
-
 bool is_upper_triangular(Matrix *self){
     if(!is_square(self)){
         return false;
@@ -208,4 +208,58 @@ bool is_upper_triangular(Matrix *self){
         }
     }
     return true;
+}
+
+void Matrix_copy(Matrix *self, Matrix *other){
+    if(self->num_of_rows != other->num_of_rows || self->num_of_columns != other->num_of_columns){
+        printf("Matrices do not match\n");
+        return;
+    }
+    for (size_t i = 0; i < self->num_of_rows; i++)
+    {
+        for (size_t j = 0; j < self->num_of_columns; j++)
+        {
+            self->vtable->set_value(self, i, j, other->vtable->get_value(other, i, j));
+        }
+    }
+}
+
+void QR_Factorization(Matrix *A, Matrix *Q, Matrix *R){
+    if(!can_multiply(Q, R)){
+        printf("Matrices do not match\n");
+        return;
+    }
+    if(!is_square(R) || R->num_of_rows != A->num_of_rows || R->num_of_columns != Q->num_of_columns){
+        printf("Matrices do not match\n");
+        return;
+    }
+
+    Matrix *temp = GramSchmidt(A);
+    Matrix_copy(Q, temp);
+    free(temp);
+
+    for (size_t i = 0; i < R->num_of_rows; i++)
+    {
+        for (size_t j = 0; j < R->num_of_columns; j++)
+        {
+            if (i > j)
+            {
+                R->vtable->set_value(R, i, j, 0);
+            }
+            else
+            {
+                double *a_j = calloc(Q->num_of_rows, sizeof(double));
+                Q->vtable->get_col(Q, j, a_j);
+                double *e_i = calloc(A->num_of_rows, sizeof(double));
+                A->vtable->get_col(A, i,e_i);
+
+                double val = vector_dot_product(a_j, e_i, Q->num_of_rows);
+                R->vtable->set_value(R, i, j, val);
+
+                free(a_j);
+                free(e_i);
+            }
+        }
+    }
+
 }

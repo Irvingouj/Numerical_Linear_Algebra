@@ -44,5 +44,6 @@ extern bool is_lower_triangular(Matrix *self);
 extern bool can_multiply(Matrix *self, Matrix *other);
 extern bool can_solve(Matrix *self, size_t num_of_vars);
 extern bool is_upper_triangular(Matrix *self);
+void QR_Factorization(Matrix *A, Matrix *Q, Matrix *R);
 
 #endif

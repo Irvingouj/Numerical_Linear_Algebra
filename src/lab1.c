@@ -131,20 +131,31 @@ Matrix *GramSchmidt(Matrix *A)
     Matrix *res = New_Matrix_row_col(A->num_of_rows, A->num_of_columns);
     double **Vs = matrix_to_col(A);
     double **Us = init_2d_array(vec_n, A->num_of_columns);
+    double **Es = init_2d_array(vec_n, A->num_of_columns);
 
     // gram schmidt
     vector_copy(Vs[0], vec_n, Us[0]);
+    double* e = get_normalized_vector(Us[0], vec_n);
+    vector_copy(e, vec_n, Es[0]);
+    free(e);
+    
     for (int k = 1; k < A->num_of_columns; k++)
     {
         double *proj = (double *)calloc(sizeof(double), vec_n);
         double *temp = (double *)calloc(sizeof(double), vec_n);
         for (int j = 0; j < k; j++)
         {
+            // proj_u_{j}(v_{k})
             projection(Us[j], Vs[k], vec_n, temp);
+            //adding up all projections
             vector_add(proj, temp, vec_n, proj);
         }
+        //u_{k} = v_{k} - sum of proj_u_{j}(v_{k})
         vector_subtract(Vs[k], proj, vec_n, Us[k]);
-
+        double* e = get_normalized_vector(Us[k], vec_n);
+        vector_copy(e, vec_n, Es[k]);
+    
+        free(e);
         free(temp);
         free(proj);
     }
@@ -152,17 +163,16 @@ Matrix *GramSchmidt(Matrix *A)
     // build res from normalized Us
     for (size_t i = 0; i < res->num_of_rows; i++)
     {
-        vector_normalize(Us[i], vec_n);
-        
         for (size_t j = 0; j < res->num_of_columns; j++)
         {
-            res->vtable->set_value(res, i, j, Us[i][j]);
+            res->vtable->set_value(res, i, j, Es[j][i]);
         }
     }
 
     // free
     free_double_pointer(Vs, A->num_of_columns);
     free_double_pointer(Us, A->num_of_columns);
+    free_double_pointer(Es, A->num_of_columns);
 
     // remember to free
     return res;

@@ -15,3 +15,9 @@ add_executable(lab2_test lab2_test.c)
 target_link_libraries(lab2_test ${MATRIX_LIB})
 add_test(NAME lab2_test 
         COMMAND lab2_test)
+
+add_executable(gstest gstest.c)
+target_link_libraries(gstest ${MATRIX_LIB})
+add_test(NAME gstest 
+        COMMAND gstest)
+        

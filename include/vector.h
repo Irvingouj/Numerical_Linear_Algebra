@@ -16,4 +16,6 @@ void projection(double *u,double *v, size_t n, double *res);
 void vector_normalize(double *u, size_t n);
 extern double* New_Vector(size_t n);
 void print_vector(double* v, size_t n,char *name);
+double* get_normalized_vector(double *u, size_t n);
+
 #endif /* DC6938C5_B495_4CFF_8AE6_45EE593E4DA3 */
