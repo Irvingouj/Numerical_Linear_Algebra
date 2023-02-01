@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct Matrix Matrix;
 
@@ -38,5 +39,10 @@ extern void Matrix_multiply(Matrix *self, Matrix *other, Matrix *res);
 extern void Matrix_multiply_left_transpose(Matrix *left, Matrix *right, Matrix *res);
 extern void Matrix_multiply_right_transpose(Matrix *left, Matrix *right, Matrix *res);
 extern Matrix* New_Matrix_from_array(double **vals, size_t row_size, size_t col_size);
+extern bool is_square(Matrix *self);
+extern bool is_lower_triangular(Matrix *self);
+extern bool can_multiply(Matrix *self, Matrix *other);
+extern bool can_solve(Matrix *self, size_t num_of_vars);
+extern bool is_upper_triangular(Matrix *self);
 
 #endif

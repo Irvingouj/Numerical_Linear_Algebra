@@ -103,21 +103,24 @@ Matrix *ProductMatrix(Matrix *left, Matrix *right)
     return res;
 }
 
-double Trans(Matrix *A)
+void Trans(Matrix *A)
 {
-    // check if it is square
-    if (A->num_of_columns != A->num_of_rows)
+    // check if A is square
+    if (A->num_of_rows != A->num_of_columns)
     {
-        return 0;
+        printf("Matrix is not square\n");
+        return;
     }
-    double res = 0;
-    // sum up diagonal
-    for (size_t i = 0; i < A->num_of_columns; i++)
+    //switch rows and columns
+    for (size_t i = 0; i < A->num_of_rows; i++)
     {
-        res += A->vtable->get_value(A, i, i);
+        for (size_t j = i; j < A->num_of_columns; j++)
+        {
+            double temp = A->vtable->get_value(A, i, j);
+            A->vtable->set_value(A, i, j, A->vtable->get_value(A, j, i));
+            A->vtable->set_value(A, j, i, temp);
+        }
     }
-
-    return res;
 }
 
 Matrix *GramSchmidt(Matrix *A)
@@ -245,8 +248,7 @@ void Problem_2(){
 
     printf("\nProblem 2 Trans\n");
     Matrix *m6 = MatReg(5);
-    double transpos = Trans(m6);
-    printf("transpos = %f\n", transpos);
+    Trans(m6);
     m6->vtable->print(m6);
     Matrix_destroy(m6);   
 

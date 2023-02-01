@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "matrix.h"
 #include "vector.h"
-
+#include <stdbool.h>
 
 double get_value(Matrix *self, size_t row, size_t col){
     return self->vals[row][col];
@@ -167,4 +167,45 @@ Matrix* New_Matrix_row_col(size_t num_of_rows,size_t num_of_columns){
     Matrix* res = (Matrix*)malloc(sizeof(Matrix));
     Matrix_init(res, num_of_rows, num_of_columns);
     return res;
+}
+
+bool is_square(Matrix *self){
+    return self->num_of_rows == self->num_of_columns;
+}
+bool is_lower_triangular(Matrix *self){
+    if(!is_square(self)){
+        return false;
+    }
+    for (size_t i = 0; i < self->num_of_rows; i++)
+    {
+        for (size_t j = i+1; j < self->num_of_columns; j++)
+        {
+            if(self->vtable->get_value(self, i, j) != 0){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+bool can_multiply(Matrix *self, Matrix *other){
+    return self->num_of_columns == other->num_of_rows;
+}
+bool can_solve(Matrix *self, size_t b_size){
+    return self->num_of_rows == b_size;
+}
+
+bool is_upper_triangular(Matrix *self){
+    if(!is_square(self)){
+        return false;
+    }
+    for (size_t i = 0; i < self->num_of_rows; i++)
+    {
+        for (size_t j = 0; j < i; j++)
+        {
+            if(self->vtable->get_value(self, i, j) != 0){
+                return false;
+            }
+        }
+    }
+    return true;
 }
