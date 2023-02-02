@@ -108,4 +108,3 @@ void print_vector(double* v, size_t n,char* name){
 };
 
 
-

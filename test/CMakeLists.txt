@@ -20,4 +20,20 @@ add_executable(gstest gstest.c)
 target_link_libraries(gstest ${MATRIX_LIB})
 add_test(NAME gstest 
         COMMAND gstest)
+
+add_executable(lab2_test_ls lab2_test_ls.c)
+target_link_libraries(lab2_test_ls ${MATRIX_LIB})
+add_test(NAME lab2_test_ls 
+        COMMAND lab2_test_ls)
         
+# add qr test
+add_executable(qr qr.c)
+target_link_libraries(qr ${MATRIX_LIB})
+add_test(NAME qr 
+        COMMAND qr)
+
+#add qr2 test
+add_executable(qr2 qr2.c)
+target_link_libraries(qr2 ${MATRIX_LIB})
+add_test(NAME qr2 
+        COMMAND qr2)
